@@ -54,5 +54,29 @@ namespace EmployeeAdminPortal.Controllers
 
             return Ok(employeeEntity);
         }
+
+        [HttpPut("{id:guid}")]
+        public IActionResult UpdateEmployee(Guid id, [FromBody] UpdateEmployeeDto updateEmployeeDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var employee = _dbContext.Employees.Find(id);
+            if (employee == null)
+            {
+                return NotFound($"Employee with ID {id} not found.");
+            }
+
+            employee.Name = updateEmployeeDto.Name;
+            employee.Email = updateEmployeeDto.Email;
+            employee.Phone = updateEmployeeDto.Phone;
+            employee.Salary = updateEmployeeDto.Salary;
+
+            _dbContext.SaveChanges();
+            return Ok("Updated");
+        }
+
     }
 }
